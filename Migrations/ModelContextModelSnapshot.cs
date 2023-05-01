@@ -24,11 +24,11 @@ namespace demo1.Migrations
 
             modelBuilder.Entity("demo1.Models.Admin", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("EmailId")
                         .IsRequired()
@@ -43,10 +43,7 @@ namespace demo1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("admins");
                 });
@@ -122,6 +119,8 @@ namespace demo1.Migrations
 
                     b.HasKey("PaymentId");
 
+                    b.HasIndex("ReservationId");
+
                     b.ToTable("payments");
                 });
 
@@ -166,6 +165,10 @@ namespace demo1.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ReservationId");
+
+                    b.HasIndex("PassengerId");
+
+                    b.HasIndex("TrainId");
 
                     b.ToTable("reservation");
                 });
@@ -267,6 +270,36 @@ namespace demo1.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("demo1.Models.Payment", b =>
+                {
+                    b.HasOne("demo1.Models.Reservation", "Reservation")
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("demo1.Models.Reservation", b =>
+                {
+                    b.HasOne("demo1.Models.Passenger", "Passenger")
+                        .WithMany()
+                        .HasForeignKey("PassengerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("demo1.Models.Train", "Train")
+                        .WithMany()
+                        .HasForeignKey("TrainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Passenger");
+
+                    b.Navigation("Train");
                 });
 #pragma warning restore 612, 618
         }

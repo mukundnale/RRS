@@ -5,9 +5,6 @@ namespace demo1.Models
     public class Admin
     {
         [Key]
-        public int Id { get; set; }
-
-        [Required]
         public int UserId { get; set; }
 
         [Required]

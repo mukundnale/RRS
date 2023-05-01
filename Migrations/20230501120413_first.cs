@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace demo1.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,54 +15,15 @@ namespace demo1.Migrations
                 name: "admins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EmailId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_admins", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "payments",
-                columns: table => new
-                {
-                    PaymentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ReservationId = table.Column<int>(type: "int", nullable: false),
-                    PaymentDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TotalAmount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_payments", x => x.PaymentId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "reservation",
-                columns: table => new
-                {
-                    ReservationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PassengerId = table.Column<int>(type: "int", nullable: false),
-                    TrainId = table.Column<int>(type: "int", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Destination = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ReservationDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NoOfPassengers = table.Column<int>(type: "int", nullable: false),
-                    SeatNo = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_reservation", x => x.ReservationId);
+                    table.PrimaryKey("PK_admins", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -139,10 +100,81 @@ namespace demo1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "reservation",
+                columns: table => new
+                {
+                    ReservationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PassengerId = table.Column<int>(type: "int", nullable: false),
+                    TrainId = table.Column<int>(type: "int", nullable: false),
+                    Source = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Destination = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReservationDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NoOfPassengers = table.Column<int>(type: "int", nullable: false),
+                    SeatNo = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reservation", x => x.ReservationId);
+                    table.ForeignKey(
+                        name: "FK_reservation_Trains_TrainId",
+                        column: x => x.TrainId,
+                        principalTable: "Trains",
+                        principalColumn: "TrainId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_reservation_passengers_PassengerId",
+                        column: x => x.PassengerId,
+                        principalTable: "passengers",
+                        principalColumn: "PassengerId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "payments",
+                columns: table => new
+                {
+                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReservationId = table.Column<int>(type: "int", nullable: false),
+                    PaymentDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TotalAmount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_payments", x => x.PaymentId);
+                    table.ForeignKey(
+                        name: "FK_payments_reservation_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "reservation",
+                        principalColumn: "ReservationId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_passengers_UserId",
                 table: "passengers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_payments_ReservationId",
+                table: "payments",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reservation_PassengerId",
+                table: "reservation",
+                column: "PassengerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reservation_TrainId",
+                table: "reservation",
+                column: "TrainId");
         }
 
         /// <inheritdoc />
@@ -152,19 +184,19 @@ namespace demo1.Migrations
                 name: "admins");
 
             migrationBuilder.DropTable(
-                name: "passengers");
-
-            migrationBuilder.DropTable(
                 name: "payments");
-
-            migrationBuilder.DropTable(
-                name: "reservation");
 
             migrationBuilder.DropTable(
                 name: "seats");
 
             migrationBuilder.DropTable(
+                name: "reservation");
+
+            migrationBuilder.DropTable(
                 name: "Trains");
+
+            migrationBuilder.DropTable(
+                name: "passengers");
 
             migrationBuilder.DropTable(
                 name: "Users");
