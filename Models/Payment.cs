@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace demo1.Models
 {
@@ -18,16 +19,17 @@ namespace demo1.Models
 
         [Required]
         [StringLength(50)]
-        public string? PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string? PaymentStatus { get; set; }
+        public string PaymentStatus { get; set; }
 
         [Required]
         [Range(1, int.MaxValue)]
-        public int TotalAmount { get; set; }
+        public float TotalAmount { get; set; }
 
+        [JsonIgnore]
         public Reservation Reservation { get; set; }
     }
 }

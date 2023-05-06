@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace demo1.Models
 {
@@ -18,16 +20,20 @@ namespace demo1.Models
 
         [Required]
         [StringLength(50)]
-        public string? Source { get; set; }
+        public string Source { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string? Destination { get; set; }
+        public string Destination { get; set; }
 
 
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime ReservationDateTime { get; set; }
+
+        [Required]
+        [DataType(DataType.DateTime)]
+        public DateTime DepartureTime { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -43,12 +49,23 @@ namespace demo1.Models
         public int SeatNo { get; set; }
 
         [Required]
-        public string? Status { get; set; }
+        [Range(1, int.MaxValue)]
+        [DisplayName("Reserved Total Seats")]
+        public int TotalSeats { get; set; }
 
-        public Passenger Passenger { get; set; }
+        [Required, Range(1, int.MaxValue)]
+        public float TotalAmount { get; set; }
 
+        [Required]
+        public string Status { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<Passenger> Passenger { get; set; }
+
+        [JsonIgnore]
         public Train Train { get; set; }
 
+        [JsonIgnore]
         public Seat Seat { get; set; }
     }
 }
