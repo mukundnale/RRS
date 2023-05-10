@@ -3729,9 +3729,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dell\\OneDrive\\Documents\\cs projects\\demo1\\demo1.csproj",
-      "projectName": "demo1",
-      "projectPath": "C:\\Users\\dell\\OneDrive\\Documents\\cs projects\\demo1\\demo1.csproj",
+      "projectUniqueName": "C:\\Users\\dell\\OneDrive\\Documents\\cs projects\\demo1\\Railway_Reservation.csproj",
+      "projectName": "Railway_Reservation",
+      "projectPath": "C:\\Users\\dell\\OneDrive\\Documents\\cs projects\\demo1\\Railway_Reservation.csproj",
       "packagesPath": "C:\\Users\\dell\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\dell\\OneDrive\\Documents\\cs projects\\demo1\\obj\\",
       "projectStyle": "PackageReference",

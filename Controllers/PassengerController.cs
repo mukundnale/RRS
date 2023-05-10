@@ -1,93 +1,111 @@
-﻿using demo1.Data;
-using demo1.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Railway_Reservation.Data;
+using Railway_Reservation.DTO;
+using Railway_Reservation.Models;
+using Railway_Reservation.Repo.RailwayReservationRepository;
 
-namespace demo1.Controllers
+namespace Railway_Reservation.Controllers
 {
-    public class PassengerController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PassengerController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public PassengerController(ApplicationDbContext context)
+        private readonly IPassenger Ipassenger;
+
+        public PassengerController(IPassenger Ipassenger)
         {
-            _context = context;
+            this.Ipassenger = Ipassenger;
         }
 
+        // GET: api/Passenger
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Passenger>>> GetPassengers()
         {
-            return await _context.Passengers.ToListAsync();
+            return await Ipassenger.GetAllPassenger();
         }
 
+        // GET: api/Passenger/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Passenger>> GetPassenger(int id)
         {
-            var passenger = await _context.Passengers.FindAsync(id);
 
-            if (passenger == null)
+            return await Ipassenger.GetPassengerById(id);
+        }
+
+        // PUT: api/Passenger/5
+        
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPassenger(int id, PassengerDTO passengerdto)
+        {
+            var passenger = new Passenger();
+            passenger.Name = passengerdto.Name;
+            passenger.EmailId = passengerdto.EmailId;
+            passenger.Password = passengerdto.Password;
+            passenger.Phone_no = passengerdto.Phone_no;
+            passenger.age = passengerdto.age;
+            passenger.gender = passengerdto.gender;
+            passenger.UserId = passengerdto.UserId;
+
+            passenger = await Ipassenger.UpdatePassenger(id, passenger);
+            if(passenger==null)
             {
                 return NotFound();
             }
-
-            return passenger;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPassenger(int id, Passenger passenger)
-        {
-            if (id != passenger.PassengerId)
+            else
             {
-                return BadRequest();
+                passenger.Name = passengerdto.Name;
+                passenger.EmailId = passengerdto.EmailId;
+                passenger.Password = passengerdto.Password;
+                passenger.Phone_no = passengerdto.Phone_no;
+                passenger.age = passengerdto.age;
+                passenger.gender = passengerdto.gender;
+                passenger.UserId = passengerdto.UserId;
             }
-
-            _context.Entry(passenger).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PassengerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
+        // POST: api/Passenger
+     
         [HttpPost]
-        public async Task<ActionResult<Passenger>> PostPassenger(Passenger passenger)
+        public async Task<ActionResult<Passenger>> PostPassenger(PassengerDTO passengerdto)
         {
-            _context.Passengers.Add(passenger);
-            await _context.SaveChangesAsync();
+            var passenger = new Passenger();
+            passenger.Name = passengerdto.Name;
+            passenger.EmailId = passengerdto.EmailId;
+            passenger.Password = passengerdto.Password;
+            passenger.Phone_no = passengerdto.Phone_no;
+            passenger.age = passengerdto.age;
+            passenger.gender = passengerdto.gender;
+            passenger.UserId = passengerdto.UserId;
 
-            return CreatedAtAction("GetPassenger", new { id = passenger.PassengerId }, passenger);
+            await Ipassenger.AddPassenger(passenger);
+
+
+            return Ok(passenger);
         }
 
+        // DELETE: api/Passenger/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Passenger>> DeletePassenger(int id)
+        public async Task<IActionResult> DeletePassenger(int id)
         {
-            var passenger = await _context.Passengers.FindAsync(id);
-            if (passenger == null)
+            var passenger = await Ipassenger.DeletePassengerById(id);
+
+            if (passenger != null)
             {
-                return NotFound();
+                return Ok(passenger);
             }
 
-            _context.Passengers.Remove(passenger);
-            await _context.SaveChangesAsync();
 
-            return passenger;
+            return NotFound();
         }
 
-        private bool PassengerExists(int id)
-        {
-            return _context.Passengers.Any(e => e.PassengerId == id);
-        }
+
+
     }
 }

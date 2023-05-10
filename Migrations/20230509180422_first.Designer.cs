@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using demo1.Models;
+using Railway_Reservation.Data;
 
 #nullable disable
 
 namespace demo1.Migrations
 {
-    [DbContext(typeof(ModelContext))]
-    [Migration("20230501120413_first")]
+    [DbContext(typeof(RailwayContext))]
+    [Migration("20230509180422_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -25,13 +25,44 @@ namespace demo1.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("demo1.Models.Admin", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Admin", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("AdminId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TrainId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdminId");
+
+                    b.HasIndex("TrainId");
+
+                    b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("Railway_Reservation.Models.Passenger", b =>
+                {
+                    b.Property<int>("PassengerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PassengerId"));
 
                     b.Property<string>("EmailId")
                         .IsRequired()
@@ -46,60 +77,39 @@ namespace demo1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.Property<string>("Phone_no")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("admins");
-                });
-
-            modelBuilder.Entity("demo1.Models.Passenger", b =>
-                {
-                    b.Property<int>("PassengerId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("ReservationId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PassengerId"));
-
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("PassengerId");
+
+                    b.HasIndex("ReservationId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("passengers");
+                    b.ToTable("Passengers");
                 });
 
-            modelBuilder.Entity("demo1.Models.Payment", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Payment", b =>
                 {
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("Payment_id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Payment_id"));
 
                     b.Property<DateTime>("PaymentDateTime")
                         .HasColumnType("datetime2");
@@ -117,17 +127,17 @@ namespace demo1.Migrations
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalAmount")
-                        .HasColumnType("int");
+                    b.Property<float>("TotalAmount")
+                        .HasColumnType("real");
 
-                    b.HasKey("PaymentId");
+                    b.HasKey("Payment_id");
 
                     b.HasIndex("ReservationId");
 
-                    b.ToTable("payments");
+                    b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("demo1.Models.Reservation", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Reservation", b =>
                 {
                     b.Property<int>("ReservationId")
                         .ValueGeneratedOnAdd()
@@ -138,12 +148,15 @@ namespace demo1.Migrations
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DepartureTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Destination")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("NoOfPassengers")
+                    b.Property<int>("Number_of_Passengers")
                         .HasColumnType("int");
 
                     b.Property<int>("PassengerId")
@@ -151,6 +164,10 @@ namespace demo1.Migrations
 
                     b.Property<DateTime>("ReservationDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Reservation_status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SeatNo")
                         .HasColumnType("int");
@@ -160,23 +177,23 @@ namespace demo1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("TotalAmount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("TotalSeats")
+                        .HasColumnType("int");
 
                     b.Property<int>("TrainId")
                         .HasColumnType("int");
 
                     b.HasKey("ReservationId");
 
-                    b.HasIndex("PassengerId");
-
                     b.HasIndex("TrainId");
 
-                    b.ToTable("reservation");
+                    b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("demo1.Models.Seat", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Seat", b =>
                 {
                     b.Property<int>("SeatNo")
                         .ValueGeneratedOnAdd()
@@ -193,10 +210,13 @@ namespace demo1.Migrations
 
                     b.HasKey("SeatNo");
 
-                    b.ToTable("seats");
+                    b.HasIndex("ReservationId")
+                        .IsUnique();
+
+                    b.ToTable("Seats");
                 });
 
-            modelBuilder.Entity("demo1.Models.Train", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Train", b =>
                 {
                     b.Property<int>("TrainId")
                         .ValueGeneratedOnAdd()
@@ -218,16 +238,13 @@ namespace demo1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("TotalSeats")
-                        .HasColumnType("int");
 
                     b.Property<string>("TrainName")
                         .IsRequired()
@@ -239,7 +256,7 @@ namespace demo1.Migrations
                     b.ToTable("Trains");
                 });
 
-            modelBuilder.Entity("demo1.Models.User", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -247,15 +264,16 @@ namespace demo1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<string>("EmailId")
+                    b.Property<string>("Email_id")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -264,9 +282,24 @@ namespace demo1.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("demo1.Models.Passenger", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Admin", b =>
                 {
-                    b.HasOne("demo1.Models.User", "User")
+                    b.HasOne("Railway_Reservation.Models.Train", "Train")
+                        .WithMany()
+                        .HasForeignKey("TrainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Train");
+                });
+
+            modelBuilder.Entity("Railway_Reservation.Models.Passenger", b =>
+                {
+                    b.HasOne("Railway_Reservation.Models.Reservation", null)
+                        .WithMany("Passenger")
+                        .HasForeignKey("ReservationId");
+
+                    b.HasOne("Railway_Reservation.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,9 +308,9 @@ namespace demo1.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("demo1.Models.Payment", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Payment", b =>
                 {
-                    b.HasOne("demo1.Models.Reservation", "Reservation")
+                    b.HasOne("Railway_Reservation.Models.Reservation", "Reservation")
                         .WithMany()
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -286,23 +319,34 @@ namespace demo1.Migrations
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("demo1.Models.Reservation", b =>
+            modelBuilder.Entity("Railway_Reservation.Models.Reservation", b =>
                 {
-                    b.HasOne("demo1.Models.Passenger", "Passenger")
-                        .WithMany()
-                        .HasForeignKey("PassengerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("demo1.Models.Train", "Train")
+                    b.HasOne("Railway_Reservation.Models.Train", "Train")
                         .WithMany()
                         .HasForeignKey("TrainId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Train");
+                });
+
+            modelBuilder.Entity("Railway_Reservation.Models.Seat", b =>
+                {
+                    b.HasOne("Railway_Reservation.Models.Reservation", "Reservation")
+                        .WithOne("Seat")
+                        .HasForeignKey("Railway_Reservation.Models.Seat", "ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("Railway_Reservation.Models.Reservation", b =>
+                {
                     b.Navigation("Passenger");
 
-                    b.Navigation("Train");
+                    b.Navigation("Seat")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
