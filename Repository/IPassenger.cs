@@ -12,7 +12,7 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
 
         Task<Passenger> UpdatePassenger(int id, Passenger passenger);
 
-        Task<Passenger> DeletePassengerById(int id);
+        Task<bool> DeletePassengerById(int id);
 
     }
 }

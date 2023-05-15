@@ -61,7 +61,11 @@ namespace Railway_Reservation.Models
 
         //------------------------------------------------------------
 
+
         [JsonIgnore]
-        public User User { get; set; }
+        public IEnumerable<Reservation> reservation { get; set; }   
+
+        [JsonIgnore]
+        public User? User { get; set; }
     }
 }

@@ -38,6 +38,26 @@ namespace Railway_Reservation.Controllers
             return await Ipassenger.GetPassengerById(id);
         }
 
+        // POST: api/Passenger
+     
+        [HttpPost]
+        public async Task<ActionResult<Passenger>> PostPassenger(PassengerDTO passengerdto)
+        {
+            var passenger = new Passenger();
+            passenger.Name = passengerdto.Name;
+            passenger.EmailId = passengerdto.EmailId;
+            passenger.Password = passengerdto.Password;
+            passenger.Phone_no = passengerdto.Phone_no;
+            passenger.age = passengerdto.age;
+            passenger.gender = passengerdto.gender;
+            passenger.UserId = passengerdto.UserId;
+
+            await Ipassenger.AddPassenger(passenger);
+
+
+            return Ok(passenger);
+        }
+
         // PUT: api/Passenger/5
         
         [HttpPut("{id}")]
@@ -70,25 +90,6 @@ namespace Railway_Reservation.Controllers
             return NoContent();
         }
 
-        // POST: api/Passenger
-     
-        [HttpPost]
-        public async Task<ActionResult<Passenger>> PostPassenger(PassengerDTO passengerdto)
-        {
-            var passenger = new Passenger();
-            passenger.Name = passengerdto.Name;
-            passenger.EmailId = passengerdto.EmailId;
-            passenger.Password = passengerdto.Password;
-            passenger.Phone_no = passengerdto.Phone_no;
-            passenger.age = passengerdto.age;
-            passenger.gender = passengerdto.gender;
-            passenger.UserId = passengerdto.UserId;
-
-            await Ipassenger.AddPassenger(passenger);
-
-
-            return Ok(passenger);
-        }
 
         // DELETE: api/Passenger/5
         [HttpDelete("{id}")]

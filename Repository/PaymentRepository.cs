@@ -13,30 +13,15 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
         {
             this.railwayContext = railwayContext;
         }
-
-        public async Task<Payment> CancelPayment(Payment payment)
+        public async Task<List<Payment>> GetPayments()
         {
-
-            var pay = await railwayContext.Payments.FindAsync(payment);
-            railwayContext.Payments.Remove(pay);
-            await railwayContext.SaveChangesAsync();
-            return pay;
+            return await railwayContext.Payments.ToListAsync();
         }
-
-        public async Task<Payment> CheckPaymentStatus(string status)
-        {
-            return await railwayContext.Payments.FirstOrDefaultAsync(p => p.PaymentStatus == status);
-        }
-
         public async Task<Payment> GetPaymentById(int id)
         {
             return await railwayContext.Payments.FirstOrDefaultAsync(p => p.Payment_id == id);
         }
 
-        public async Task<List<Payment>> GetPayments()
-        {
-            return await railwayContext.Payments.ToListAsync();
-        }
 
         public async Task<Payment> MakePayment(Payment payment)
         {
@@ -44,5 +29,13 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
             await railwayContext.SaveChangesAsync();
             return payment;
         }
+        public async Task<Payment> CheckPaymentStatus(string status)
+        {
+            return await railwayContext.Payments.FirstOrDefaultAsync(p => p.PaymentStatus == status);
+        }
+     
+
+
+
     }
 }

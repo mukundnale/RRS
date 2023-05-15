@@ -12,29 +12,6 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
         {
             this.railwayContext = railwayContext;
         }
-
-        public async Task<Passenger> AddPassenger(Passenger passenger)
-        {
-            //throw new NotImplementedException();
-            await railwayContext.Passengers.AddAsync(passenger);
-            await railwayContext.SaveChangesAsync();
-            return passenger;
-        }
-
-        public async Task<Passenger> DeletePassengerById(int id)
-        {
-            var passenger = await railwayContext.Passengers.FindAsync(id);
-            if (passenger == null)
-            {
-                return null;
-            }
-            railwayContext.Passengers.Remove(passenger);
-            await railwayContext.SaveChangesAsync();
-
-            return passenger;
-        }
-
-
         public async Task<List<Passenger>> GetAllPassenger()
         {
             return await railwayContext.Passengers.ToListAsync();
@@ -44,7 +21,12 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
         {
             return await railwayContext.Passengers.FirstOrDefaultAsync(p => p.PassengerId == id);
         }
-
+        public async Task<Passenger> AddPassenger(Passenger passenger)
+        {
+            await railwayContext.Passengers.AddAsync(passenger);
+            await railwayContext.SaveChangesAsync();
+            return passenger;
+        }
         public async Task<Passenger> UpdatePassenger(int id, Passenger passenger)
         {
             var pass = await railwayContext.Passengers.FindAsync(id);
@@ -64,5 +46,22 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
             return pass;
 
         }
+
+        public async Task<bool> DeletePassengerById(int id)
+        {
+            var passenger = await railwayContext.Passengers.FindAsync(id);
+            if (passenger == null)
+            {
+                return false;
+            }
+            railwayContext.Passengers.Remove(passenger);
+            await railwayContext.SaveChangesAsync();
+
+            return true;
+        }
+
+
+
+
     }
 }

@@ -9,9 +9,9 @@ namespace Railway_Reservation.Controllers
     [ApiController]
     public class TrainController : ControllerBase
     {
-        private readonly ITrainRepository trainRepository;
+        private readonly ITrain trainRepository;
 
-        public TrainController(ITrainRepository trainRepository)
+        public TrainController(ITrain trainRepository)
         {
             this.trainRepository = trainRepository;
         }
@@ -22,10 +22,41 @@ namespace Railway_Reservation.Controllers
             return await trainRepository.GetTrains();
         }
 
-        [HttpGet("{Source}")]
+        [HttpGet("GetSearch")]
         public async Task<ActionResult<Train>> GetSearch(string source, string destination, DateTime departureTime)
         {
             return await trainRepository.CheckAvailability(source, destination, departureTime);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Train>> AddTrain(Train train)
+        {
+            var addedTrain = await trainRepository.AddTrain(train);
+            //return CreatedAtAction(nameof(GetTrains), new { id = addedTrain.Id }, addedTrain);
+            return Ok(addedTrain);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTrain(int id)
+        {
+            bool passenger = await trainRepository.RemoveTrain(id);
+            if (passenger)
+            {
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Train>> UpdateTrain(int id, Train train)
+        {
+            train = await trainRepository.UpdateTrain(id, train);
+            if (train == null)
+            {
+                return NotFound();
+            }
+            return Ok(train);
         }
     }
 }

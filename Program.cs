@@ -11,9 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<RailwayContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("ModelCS")));
 
-builder.Services.AddScoped<ITrainRepository, TrainRepository>();
+builder.Services.AddScoped<ITrain, TrainRepository>();
 builder.Services.AddScoped<IPassenger, PassengerRepository>();
 builder.Services.AddScoped<IPayment, PaymentRepository>();
+builder.Services.AddScoped<ISeat, SeatRepository>();
+builder.Services.AddScoped<IReservation, ReservationRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

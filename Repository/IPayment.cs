@@ -8,6 +8,5 @@ namespace Railway_Reservation.Repository
         Task<Payment> GetPaymentById(int id);
         Task<Payment> MakePayment(Payment payment);
         Task<Payment> CheckPaymentStatus(string status);
-        Task<Payment> CancelPayment(Payment payment);   
     }
 }

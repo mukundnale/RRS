@@ -25,7 +25,6 @@ namespace Railway_Reservation.Models
 
         //------------------------------------------------------------
 
-
         [Required]
         [StringLength(50)]
         public string Source { get; set; }
@@ -87,7 +86,7 @@ namespace Railway_Reservation.Models
         //------------------------------------------------------------
 
         [JsonIgnore]
-        public IEnumerable<Passenger> Passenger { get; set; }
+        public Passenger Passenger { get; set; }
 
         [JsonIgnore]
         public Train Train { get; set; }

@@ -60,16 +60,5 @@ namespace Railway_Reservation.Controllers
             }
             return Ok(payment);
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> CancelPayment(int id, Payment payment)
-        {
-            if (id != payment.Payment_id)
-            {
-                return BadRequest();
-            }
-            var result = await _paymentRepository.CancelPayment(payment);
-            return Ok(result);
-        }
     }
 }

@@ -4,7 +4,7 @@ using Railway_Reservation.Models;
 
 namespace Railway_Reservation.Repo.RailwayReservationRepository
 {
-    public class TrainRepository : ITrainRepository
+    public class TrainRepository : ITrain
     {
         private readonly RailwayContext railwayContext;
 
@@ -24,5 +24,43 @@ namespace Railway_Reservation.Repo.RailwayReservationRepository
             return train;
         }
 
+        public async Task<Train> AddTrain(Train train)
+        {
+            await railwayContext.Trains.AddAsync(train);
+            await railwayContext.SaveChangesAsync();
+            return train;
+        }
+
+        public async Task<Train> UpdateTrain(int id, Train train)
+        {
+            Train t = await railwayContext.Trains.FindAsync(id);
+            if (t == null)
+            {
+                return null;
+            }
+
+            t.TrainId = id;
+            t.TrainName = train.TrainName;
+            t.Source = train.Source;
+            t.Destination = train.Destination;
+            t.DepartureTime = train.DepartureTime;
+            t.ArrivalTime = train.ArrivalTime;
+            t.AvailableSeats = train.AvailableSeats;
+            t.Price = train.Price;
+
+            await railwayContext.SaveChangesAsync();
+            return t;
+        }
+
+        public async Task<bool> RemoveTrain(int trainid)
+        {
+            var train = await railwayContext.Trains.FindAsync(trainid);
+            if (train != null)
+            {
+                railwayContext.Trains.Remove(train);
+                railwayContext.SaveChanges();
+            }
+            return true;
+        }
     }
 }
